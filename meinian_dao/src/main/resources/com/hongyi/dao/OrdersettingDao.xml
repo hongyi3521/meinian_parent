@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongyi.dao.OrdersettingDao">
+    <!--根据预约日期查询-->
+    <select id="findCountByOrderDate" resultType="java.lang.Long" parameterType="java.util.Date">
+        select count(*)
+        from t_ordersetting
+        where orderDate = #{orderDate}
+    </select>
+    <!--根据月份查询预约设置信息
+也可以使用sql语句：SELECT * FROM t_ordersetting WHERE orderDate LIKE '2019-08-%'
+-->
+    <select id="getOrderSettingByMonth" resultType="com.hongyi.pojo.OrderSetting">
+        select orderDate, number, reservations
+        from t_ordersetting
+        where orderDate between #{dateBegin} and #{dateEnd}
+    </select>
+    <!--    修改数据-->
+    <update id="editNumberByOrderDate" parameterType="orderSetting">
+        update t_ordersetting
+        set number = #{number}
+        where orderDate = #{orderDate}
+    </update>
+    <!--  添加某天的可预约人数,默认已预约人数是0  -->
+    <insert id="add" parameterType="orderSetting">
+        insert into t_ordersetting(orderDate, number, reservations)
+        values (#{orderDate}, #{number}, #{reservations});
+    </insert>
+    <!--根据日期查询预约设置信息-->
+    <select id="findByOrderDate" resultType="com.hongyi.pojo.OrderSetting" parameterType="date">
+        select *
+        from t_ordersetting
+        where orderDate = #{date}
+    </select>
+    <!--更新已预约人数-->
+    <update id="editReservationsByOrderDate" parameterType="orderSetting">
+        update t_ordersetting
+        set reservations = #{reservations}
+        where orderDate = #{orderDate}
+    </update>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongyi.dao.MemberDao">
+    <insert id="add" parameterType="member" useGeneratedKeys="true" keyProperty="id">
+        insert into t_member
+        (fileNumber, name, sex, idCard, phoneNumber, regTime, password, email, birthday, remark)
+        values (#{fileNumber}, #{name}, #{sex}, #{idCard}, #{phoneNumber}, #{regTime}, #{password}, #{email},
+                #{birthday}, #{remark})
+    </insert>
+
+    <select id="findByTelephone" resultType="com.hongyi.pojo.Member" parameterType="string">
+        select *
+        from t_member
+        where phoneNumber = #{telephone}
+    </select>
+    <!--根据日期统计会员数，统计指定日期之前的会员数 注意不要留空格-->
+    <select id="findMemberCountBeforeDate" resultType="java.lang.Integer" parameterType="string">
+        select count(*)
+        from t_member
+        where regTime &lt;= #{regTime}
+    </select>
+<!--    // （1）今日新增会员数-->
+    <select id="getTodayNewMember" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM t_member WHERE regTime = #{today}
+    </select>
+<!--    // （2）总会员数-->
+    <select id="getTotalMember" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM t_member
+    </select>
+<!--    // （3）本周新增会员数-->
+    <select id="getThisWeekAndMonthNewMember" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM t_member WHERE regTime &gt;= #{weekMonday}
+    </select>
+
+</mapper>

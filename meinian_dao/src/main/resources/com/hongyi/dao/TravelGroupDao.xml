@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongyi.dao.TravelGroupDao">
+    <!--    在定义xml映射器时设置属性useGeneratedKeys值为true，
+    并分别指定属性keyProperty和keyColumn为对应的数据库记录主键字段与Java对象的主键属性。-->
+    <insert id="add" parameterType="travelGroup" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into t_travelgroup(code, name, helpCode, sex, remark, attention)
+        values (#{code}, #{name}, #{helpCode}, #{sex}, #{remark}, #{attention})
+    </insert>
+    <insert id="setTravelGroupAndTravelItem" parameterType="map">
+        insert into t_travelgroup_travelitem
+        values (#{travelGroupId}, #{travelItemId})
+    </insert>
+
+    <select id="findPage" resultType="com.hongyi.pojo.TravelGroup" parameterType="string">
+        select * from t_travelgroup
+        <where>
+            <if test="value!=null and value.length > 0">
+                code=#{value} or name like concat("%",#{value},"%") or helpCode=#{value}
+            </if>
+        </where>
+    </select>
+    <!-- 获取单个跟团游详细数据   -->
+    <select id="findById" resultType="com.hongyi.pojo.TravelGroup" parameterType="integer">
+        select *
+        from t_travelgroup
+        where id = #{id}
+    </select>
+    <!-- 获取自由行id集合   -->
+    <select id="getTravelItemIds" resultType="java.lang.Integer">
+        select travelitem_id
+        from t_travelgroup_travelitem
+        where travelgroup_id = #{id}
+    </select>
+    <select id="findAll" resultType="com.hongyi.pojo.TravelGroup">
+        select * from t_travelgroup
+    </select>
+
+    <!-- 修改跟团游数据   -->
+    <update id="update" parameterType="travelGroup">
+        update t_travelgroup
+        <set>
+            <if test="code!=null and code.length>0">
+                code = #{code},
+            </if>
+            <if test="name!=null and name.length>0">
+                name = #{name},
+            </if>
+            <if test="helpCode!=null and helpCode.length>0">
+                helpCode = #{helpCode},
+            </if>
+            <if test="sex!=null and sex.length>0">
+                sex = #{sex},
+            </if>
+            <if test="remark!=null and remark.length>0">
+                remark = #{remark},
+            </if>
+            <if test="attention!=null and attention.length>0">
+                attention = #{attention},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <!-- 先删除关联表数据   -->
+    <delete id="delete" parameterType="integer">
+        DELETE
+        from t_travelgroup_travelitem
+        where travelgroup_id = #{id}
+    </delete>
+    <delete id="deleteById">
+        DELETE
+        from t_travelgroup
+        where id = #{id}
+    </delete>
+</mapper>
